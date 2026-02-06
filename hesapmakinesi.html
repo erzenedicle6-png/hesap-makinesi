@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tatlı Hesap Makinesi</title>
+    <style>
+        /* Görseldeki pembe ve krem tonları */
+        :root {
+            --bg-color: #fce4ec;
+            --calc-body: #fff0f3;
+            --display-bg: #5d4a4a;
+            --btn-pink: #ffb7c5;
+            --btn-white: #ffffff;
+            --border-color: #7d5a5a;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Comic Sans MS', 'Chalkboard SE', cursive;
+        }
+
+        /* Hesap Makinesi Gövdesi */
+        .calculator {
+            background-color: var(--calc-body);
+            border: 4px solid var(--border-color);
+            border-radius: 40px;
+            padding: 30px;
+            box-shadow: 10px 10px 0px rgba(0,0,0,0.1);
+            width: 340px;
+            transform: rotate(-2deg); /* Görseldeki hafif eğik duruş */
+        }
+
+        /* Ekran Tasarımı */
+        .display {
+            background-color: var(--display-bg);
+            color: #ffdae0;
+            height: 70px;
+            border-radius: 15px;
+            border: 3px solid var(--border-color);
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 0 15px;
+            font-size: 2rem;
+            font-family: 'Courier New', monospace;
+            box-shadow: inset 4px 4px 0px rgba(0,0,0,0.2);
+        }
+
+        /* Buton Izgarası */
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        /* Pofuduk Buton Stili */
+        button {
+            border: 3px solid var(--border-color);
+            border-radius: 15px 12px 18px 10px; /* Düzensiz, el yapımı hissi */
+            padding: 15px 5px;
+            font-size: 1.4rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.1s;
+            color: var(--border-color);
+            box-shadow: 3px 4px 0px var(--border-color);
+            position: relative;
+        }
+
+        button:active {
+            box-shadow: 0px 0px 0px;
+            transform: translate(2px, 2px);
+        }
+
+        /* Pembe Butonlar (Operatörler) */
+        .btn-op {
+            background-color: var(--btn-pink);
+        }
+
+        /* Beyaz Butonlar (Sayılar) */
+        .btn-num {
+            background-color: var(--btn-white);
+        }
+
+        /* Özel Simgeler (Görseldeki detaylar) */
+        .face {
+            font-size: 0.7rem;
+            display: block;
+            margin-top: -5px;
+        }
+
+        .zero { grid-column: span 2; border-radius: 20px 40px 20px 30px; }
+        .equal { background-color: var(--btn-pink); }
+
+    </style>
+</head>
+<body>
+
+<div class="calculator">
+    <div class="display" id="display">0</div>
+    <div class="buttons">
+        <button class="btn-op" onclick="clearDisplay()">C <span class="face">;ㅅ;</span></button>
+        <button class="btn-op" onclick="appendToDisplay('/')">÷</button>
+        <button class="btn-op" onclick="appendToDisplay('*')">×</button>
+        <button class="btn-op" onclick="deleteLast()">off <span class="face">u.u</span></button>
+
+        <button class="btn-num" onclick="appendToDisplay('7')">7</button>
+        <button class="btn-num" onclick="appendToDisplay('8')">8</button>
+        <button class="btn-num" onclick="appendToDisplay('9')">9 <span class="face">^.^)</span></button>
+        <button class="btn-op" onclick="appendToDisplay('-')">-</button>
+
+        <button class="btn-num" onclick="appendToDisplay('4')">4</button>
+        <button class="btn-num" onclick="appendToDisplay('5')">5</button>
+        <button class="btn-num" onclick="appendToDisplay('6')">6</button>
+        <button class="btn-op" onclick="appendToDisplay('+')">+</button>
+
+        <button class="btn-num" onclick="appendToDisplay('1')">1</button>
+        <button class="btn-num" onclick="appendToDisplay('2')">2</button>
+        <button class="btn-num" onclick="appendToDisplay('3')">3</button>
+        <button class="btn-op equal" onclick="calculate()">=</button>
+
+        <button class="btn-num zero" onclick="appendToDisplay('0')">000</button>
+        <button class="btn-num" onclick="appendToDisplay('.')">.</button>
+        <button class="btn-op" onclick="appendToDisplay('%')">%</button>
+    </div>
+</div>
+
+<script>
+    let display = document.getElementById('display');
+    let currentInput = '0';
+
+    function updateDisplay() {
+        display.innerText = currentInput;
+    }
+
+    function appendToDisplay(value) {
+        if (currentInput === '0' && value !== '.') {
+            currentInput = value;
+        } else {
+            currentInput += value;
+        }
+        updateDisplay();
+    }
+
+    function clearDisplay() {
+        currentInput = '0';
+        updateDisplay();
+    }
+
+    function deleteLast() {
+        currentInput = currentInput.slice(0, -1);
+        if (currentInput === "") currentInput = "0";
+        updateDisplay();
+    }
+
+    function calculate() {
+        try {
+            // Güvenli hesaplama için basit bir eval kullanımı
+            // Gerçek projelerde özel bir parser önerilir
+            currentInput = eval(currentInput.replace('×', '*').replace('÷', '/')).toString();
+            updateDisplay();
+        } catch (error) {
+            currentInput = "Hata";
+            updateDisplay();
+            setTimeout(clearDisplay, 1500);
+        }
+    }
+</script>
+
+</body>
+</html>
